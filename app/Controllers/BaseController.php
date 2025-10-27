@@ -50,6 +50,10 @@ abstract class BaseController extends Controller
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
+        config('SchoolConfig')->init();
+        $this->school = config('SchoolConfig')->school;
+        // view()->setData(['school' => $this->school]);
+        \Config\Services::renderer()->setData(['school' => $this->school], 'raw');
 
         // Preload any models, libraries, etc, here.
 
