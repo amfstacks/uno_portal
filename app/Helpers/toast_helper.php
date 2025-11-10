@@ -6,6 +6,7 @@ if (!function_exists('toast')) {
             'message' => $message,
             'type' => $type
         ]);
+        
         // echo "
 
 
