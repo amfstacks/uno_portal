@@ -20,4 +20,25 @@ class UserModel extends Model
         }
         return $data;
     }
+
+    public function school()
+    {
+        return $this->belongsTo(SchoolModel::class, 'school_id');
+    }
+
+    public function student()
+    {
+        return $this->hasOne(StudentModel::class, 'user_id');
+    }
+
+    // -----------------------------------------------------------------
+    // Helper: find active exam-officers for the current school
+    // -----------------------------------------------------------------
+    public function activeExamOfficers()
+    {
+        return $this->where('role', 'exam_officer')
+                    ->where('is_active', 1)
+                    ->where('school_id', session()->get('school_id'))
+                    ->findAll();
+    }
 }

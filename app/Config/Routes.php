@@ -35,6 +35,7 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->get('switch-school/(:num)', 'Admin\Dashboard::switchSchool/$1');
     $routes->get('exam-officers', 'Admin\Dashboard::examOfficers');
     $routes->post('exam-officers/create', 'Admin\Dashboard::createExamOfficer');
+    $routes->post('setSession', 'Admin\Dashboard::setSession');
     $routes->get('results/activate', 'Admin\Dashboard::activateResults');
     $routes->get('registration/list', 'Admin\Dashboard::registrationList');
 });

@@ -16,6 +16,13 @@
     });
 </script>
 <?php endif; ?>
+<script>
+    // Auto-close modal on success toast
+    document.addEventListener('toast', function(e) {
+        const modal = document.getElementById('createOfficerModal');
+        if (modal && modal.open) modal.close();
+    });
+</script>
   <script><?= $school['custom_js'] ?? '' ?></script>
 </body>
 </html>
