@@ -48,18 +48,21 @@ class Dashboard extends BaseController
     {
         $session = $this->request->getPost('session');
         $semester = $this->request->getPost('semester');
+        $programmeId = $this->request->getPost('programme_id');
         $schoolId = session()->get('school_id');
 
         // Deactivate all
-        $this->sessionModel->where('school_id', $schoolId)->set(['is_active' => 0])->update();
+        // $this->sessionModel->where('school_id', $schoolId)->set(['is_active' => 0])->update();
+        $this->sessionModel->deactivateAll($schoolId, $programmeId);
 
         // Create or activate
-        $existing = $this->sessionModel->where(['session_name' => $session, 'semester' => $semester, 'school_id' => $schoolId])->first();
+        $existing = $this->sessionModel->where(['session_name' => $session,'programme_id' => $programmeId,'semester' => $semester, 'school_id' => $schoolId])->first();
         if (!$existing) {
             $this->sessionModel->insert([
                 'school_id' => $schoolId,
                 'session_name' => $session,
                 'semester' => $semester,
+                'programme_id' => $programmeId,
                 'is_active' => 1
             ]);
         } else {
