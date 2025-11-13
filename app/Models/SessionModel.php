@@ -26,4 +26,12 @@ class SessionModel extends Model
             $this->update($session['id'], [$field => $value]);
         }
     }
+     public function updateActive(array $data)
+    {
+        $session = $this->getActive(session()->get('school_id'));
+        if ($session) {
+            return $this->update($session['id'], $data);
+        }
+        return false; // optional: handle if no active session exists
+    }
 }

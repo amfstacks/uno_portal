@@ -14,6 +14,9 @@
                     colors: {
                         primary: '<?= $school['primary_color'] ?? "#1e40af" ?>',
                         secondary: '<?= $school['secondary_color'] ?? "#1e293b" ?>',
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'ui-sans-serif', 'system-ui']
                     }
                 }
             }
@@ -22,6 +25,7 @@
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Alpine.js for interactivity -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -34,6 +38,9 @@
     <!-- Custom CSS -->
     <style>
         <?= $school['custom_css'] ?? '' ?>
+         body {
+            font-family: 'Montserrat', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        }
         .sidebar-open { transform: translateX(0); }
         .sidebar-closed { transform: translateX(-100%); }
         .fade-in { animation: fadeIn 0.3s ease-in; }

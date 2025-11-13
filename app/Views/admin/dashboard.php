@@ -87,7 +87,7 @@
                     <div>
                         <p class="text-xs text-gray-600">Application</p>
                         <div class="flex justify-center space-x-1 mt-1">
-                            <a href="/admin/toggle/application?status=1" class="text-green-600 hover:underline text-sm">Open</a>
+                            <a href="toggle/application/1" class="text-green-600 hover:underline text-sm">Open</a>
                             <span>|</span>
                             <a href="/admin/toggle/application?status=0" class="text-red-600 hover:underline text-sm">Close</a>
                         </div>
