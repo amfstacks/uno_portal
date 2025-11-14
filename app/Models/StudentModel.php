@@ -20,7 +20,7 @@ class StudentModel extends Model
     ];
 
     // -----------------------------------------------------------------
-    // Relationships
+    // Relationships    
     // -----------------------------------------------------------------
     public function user()
     {
