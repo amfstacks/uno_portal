@@ -23,6 +23,7 @@
         if (modal && modal.open) modal.close();
     });
 </script>
+<script src="<?= base_url('assets/js/utils.js') ?>"></script>
   <script><?= $school['custom_js'] ?? '' ?></script>
 </body>
 </html>

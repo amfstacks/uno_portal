@@ -32,6 +32,7 @@ $routes->get('/logout', 'Auth::logout');
 $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->get('dashboard', 'Admin\Dashboard::index');
     $routes->get('toggle/application/(:num)', 'Admin\Dashboard::toggleApplication/$1');
+    $routes->post('update-session-status', 'Admin\Dashboard::updateSessionStatus');
     $routes->get('switch-school/(:num)', 'Admin\Dashboard::switchSchool/$1');
     $routes->get('exam-officers', 'Admin\Dashboard::examOfficers');
     $routes->post('exam-officers/create', 'Admin\Dashboard::createExamOfficer');

@@ -63,7 +63,7 @@
 <!-- Set Session per Programme -->
 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
     <h3 class="font-medium mb-3 flex items-center">
-        <i class="fas fa-calendar-alt mr-2 text-primary"></i> Set Academic Session
+        <i class="fas fa-calendar-alt mr-2 text-primary"></i> Set Current Academic Session
     </h3>
 
     <form action="setSession" method="post" class="flex flex-col sm:flex-row gap-2">
@@ -86,7 +86,10 @@
             <option value="1">First Semester</option>
             <option value="2">Second Semester</option>
         </select>
-
+ <select name="session_type" required class="px-4 py-2 border border-gray-300 rounded-lg">
+                        <option value="application">Application</option>
+                        <option value="registration">Registration</option>
+                    </select>
         <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition">
             Set Session
         </button>
@@ -104,52 +107,113 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Programme</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Semester</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Application</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Results Entry</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Programme</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Session</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Semester</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Application</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Results Entry</th>
                 </tr>
             </thead>
+
             <tbody class="bg-white divide-y divide-gray-200">
-                <?php foreach ($programmes as $prog): 
-                    $sess = $sessionsByProgramme[$prog['id']] ?? null;
-                ?>
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium"><?= esc($prog['name']) ?></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm"><?= $sess ? esc($sess['session_name']) : '<span class="text-red-500">None</span>' ?></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm"><?= $sess ? $sess['semester'] : '-' ?></td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <?php if ($sess): ?>
-                            <span class="px-2 py-1 rounded text-xs <?= $sess['registration_open'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
-                                <?= $sess['registration_open'] ? 'Open' : 'Closed' ?>
-                            </span>
-                        <?php else: ?> -
-                        <?php endif; ?>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <?php if ($sess): ?>
-                            <span class="px-2 py-1 rounded text-xs <?= $sess['application_open'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
-                                <?= $sess['application_open'] ? 'Open' : 'Closed' ?>
-                            </span>
-                        <?php else: ?> -
-                        <?php endif; ?>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm">
-                        <?php if ($sess): ?>
-                            <span class="px-2 py-1 rounded text-xs <?= $sess['results_entry_open'] ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800' ?>">
-                                <?= $sess['results_entry_open'] ? 'Open' : 'Closed' ?>
-                            </span>
-                        <?php else: ?> -
-                        <?php endif; ?>
-                    </td>
-                </tr>
+                <?php foreach ($programmes as $prog): ?>
+                    <?php 
+                        // ALL active sessions for this programme
+                        $programmeSessions = $sessionsByProgramme[$prog['id']] ?? [];
+                        
+                        // If none, show 1 row saying none
+                        if (empty($programmeSessions)):
+                    ?>
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-medium"><?= esc($prog['name']) ?></td>
+                            <td class="px-6 py-4 text-sm text-red-500">No Active Session</td>
+                            <td class="px-6 py-4 text-sm">-</td>
+                            <td class="px-6 py-4 text-sm">-</td>
+                            <td class="px-6 py-4 text-sm">-</td>
+                            <td class="px-6 py-4 text-sm">-</td>
+                        </tr>
+
+                    <?php 
+                        else:
+                            // Loop each session type
+                            foreach ($programmeSessions as $type => $session):
+                    ?>
+
+                        <tr>
+                            <!-- Programme name (only show on first row) -->
+                            <td class="px-6 py-4 text-sm font-medium">
+                                <?= esc($prog['name']) ?>
+                            </td>
+
+                            <!-- Session name -->
+                            <td class="px-6 py-4 text-sm">
+                                <?= esc($session['session_name']) ?>
+                            </td>
+
+                            <!-- Semester -->
+                            <td class="px-6 py-4 text-sm">
+                                <?= esc($session['semester']) ?>
+                            </td>
+
+                            <!-- Session Type + Status -->
+                            <td class="px-6 py-4 text-sm">
+                                <?php 
+                                    if ($type === 'application') {
+                                        $isOpen = $session['application_open'] ? 'Open' : 'Closed';
+                                    } elseif ($type === 'registration') {
+                                        $isOpen = $session['registration_open'] ? 'Open' : 'Closed';
+                                    } else {
+                                        $isOpen = 'N/A';
+                                    }
+
+                                    $class = ($isOpen === 'Open') 
+                                        ? 'bg-green-100 text-green-700' 
+                                        : 'bg-red-100 text-red-700';
+                                ?>
+
+                                <span class="font-medium"><?= ucfirst($type) ?></span>
+
+                                <?php if ($type !== 'general'): ?>
+                                    <span class="ml-2 px-2 py-1 text-xs rounded <?= $class ?>">
+                                      <select 
+    class="border rounded px-2 py-1 text-xs bg-white"
+    onchange="updateSessionStatus(<?= $session['id'] ?>, '<?= $type ?>', this.value)"
+>
+    <option value="1" <?= $isOpen === 'Open' ? 'selected' : '' ?>>Open</option>
+    <option value="0" <?= $isOpen === 'Closed' ? 'selected' : '' ?>>Closed</option>
+</select>
+
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+
+                            <!-- Application Open -->
+                            <td class="px-6 py-4 text-sm">
+                                <span class="px-2 py-1 rounded text-xs <?= $session['application_open'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
+                                    <?= $session['application_open'] ? 'Open' : 'Closed' ?>
+                                </span>
+                            </td>
+
+                            <!-- Results Entry -->
+                            <td class="px-6 py-4 text-sm">
+                                <span class="px-2 py-1 rounded text-xs <?= $session['results_entry_open'] ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800' ?>">
+                                    <?= $session['results_entry_open'] ? 'Open' : 'Closed' ?>
+                                </span>
+                            </td>
+                        </tr>
+
+                    <?php 
+                            endforeach;
+                        endif;
+                    ?>
+
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 </div>
+
 
 
     <!-- Session Control -->
@@ -289,5 +353,35 @@
         </div>
     </form>
 </dialog>
+<script>
+function updateSessionStatus(sessionId, type, value) {
+    // alert('here');
+    fetch('<?= base_url("admin/update-session-status") ?>', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            session_id: sessionId,
+            type: type,
+            value: value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // alert('Updated successfully!');
+            //  toast('Status updated successfully!');
+            showToast('Status updated successfully!');
+              toastr.success('Status updated successfully!');
+            
+        } else {
+            alert('Error updating!');
+        }
+    })
+    .catch(err => console.error(err));
+}
+</script>
 
 <?= $this->endSection() ?>

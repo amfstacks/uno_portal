@@ -38,7 +38,11 @@ $activeSessions = $sessionModel->where('school_id', $schoolId)
 // Map sessions by programme_id for easy lookup
 $sessionsByProgramme = [];
 foreach ($activeSessions as $sess) {
-    $sessionsByProgramme[$sess['programme_id']] = $sess;
+   if (!isset($sessionsByProgramme[$sess['programme_id']])) {
+    $sessionsByProgramme[$sess['programme_id']] = [];
+}
+
+$sessionsByProgramme[$sess['programme_id']][$sess['session_type']] = $sess;
 }
         $data = [
             'total_students' => model('StudentModel')->countAll(),
@@ -77,6 +81,36 @@ public function toggleRegistration($programmeId, $status)
     toast('Registration '.($status ? 'opened' : 'closed').' for programme ID '.$programmeId);
     return redirect()->back();
 }
+public function updateSessionStatus()
+{
+    if (!$this->request->isAJAX()) {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid request']);
+    }
+
+    $data = $this->request->getJSON();
+
+    $sessionId = $data->session_id;
+    $type = $data->type;
+    $value = $data->value;
+
+    $sessionModel = new SessionModel();
+
+    // determine which field to update
+    if ($type === 'application') {
+        $field = 'application_open';
+    } elseif ($type === 'registration') {
+        $field = 'registration_open';
+    } elseif ($type === 'results') {
+        $field = 'results_entry_open';
+    } else {
+        return $this->response->setJSON(['status' => 'error', 'message' => 'Invalid type']);
+    }
+
+    $sessionModel->update($sessionId, [$field => $value]);
+
+    return $this->response->setJSON(['status' => 'success']);
+}
+
 
 public function toggleResultsEntry($programmeId, $status)
 {
@@ -91,20 +125,22 @@ public function toggleResultsEntry($programmeId, $status)
         $session = $this->request->getPost('session');
         $semester = $this->request->getPost('semester');
         $programmeId = $this->request->getPost('programme_id');
+        $session_type = $this->request->getPost('session_type');
         $schoolId = session()->get('school_id');
 
         // Deactivate all
         // $this->sessionModel->where('school_id', $schoolId)->set(['is_active' => 0])->update();
-        $this->sessionModel->deactivateAll($schoolId, $programmeId);
+        $this->sessionModel->deactivateAll($schoolId, $programmeId,$session_type);
 
         // Create or activate
-        $existing = $this->sessionModel->where(['session_name' => $session,'programme_id' => $programmeId,'semester' => $semester, 'school_id' => $schoolId])->first();
+        $existing = $this->sessionModel->where(['session_name' => $session,'programme_id' => $programmeId,'semester' => $semester, 'school_id' => $schoolId, 'session_type' => $session_type])->first();
         if (!$existing) {
             $this->sessionModel->insert([
                 'school_id' => $schoolId,
                 'session_name' => $session,
                 'semester' => $semester,
                 'programme_id' => $programmeId,
+                'session_type' => $session_type,
                 'is_active' => 1
             ]);
         } else {

@@ -9,14 +9,15 @@ class SessionModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = [
         'school_id', 'session_name', 'semester', 'is_active','programme_id',
-        'application_open', 'registration_open', 'results_entry_open'
+        'application_open', 'registration_open', 'results_entry_open','session_type'
     ];
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
-     public function deactivateAll($schoolId, $programmeId)
+     public function deactivateAll($schoolId, $programmeId,$session_type)
     {
         return $this->where('school_id', $schoolId)
                     ->where('programme_id', $programmeId)
+                    ->where('session_type', $session_type)
                     ->set(['is_active' => 0])
                     ->update();
     }
