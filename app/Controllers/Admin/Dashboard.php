@@ -5,6 +5,7 @@ use App\Controllers\BaseController;
 use App\Models\UserModel;
 use App\Models\SessionModel;
 use App\Models\StudentModel;
+use App\Models\ProgrammeModel;
 
 class Dashboard extends BaseController
 {
@@ -21,10 +22,30 @@ class Dashboard extends BaseController
     }
     public function index()
     {
+        $programmeModel = model('ProgrammeModel');
+        $sessionModel = model('SessionModel');
+
+$schoolId = session()->get('school_id');
+
+// Get all programmes
+$programmes = $programmeModel->getActiveProgrammes($schoolId);
+
+// Get all active sessions
+$activeSessions = $sessionModel->where('school_id', $schoolId)
+                               ->where('is_active', 1)
+                               ->findAll();
+
+// Map sessions by programme_id for easy lookup
+$sessionsByProgramme = [];
+foreach ($activeSessions as $sess) {
+    $sessionsByProgramme[$sess['programme_id']] = $sess;
+}
         $data = [
             'total_students' => model('StudentModel')->countAll(),
             'pending_payments' => model('PaymentModel')->where('status', 'pending')->countAllResults(),
             'active_session' => model('SessionModel')->where('is_active', 1)->first(),
+            'programmes' => $programmeModel->getActiveProgrammes(session()->get('school_id')),
+            'sessionsByProgramme' => $sessionsByProgramme,
         ];
         // $data = [
         //     'active_session' => $this->sessionModel->getActive(session()->get('school_id')),
@@ -37,12 +58,33 @@ class Dashboard extends BaseController
         return view('admin/dashboard', $data);
     }
 
-    public function toggleApplication($status)
-    {
-        model('SessionModel')->updateActive(['application_open' => $status]);
-        toast('Application '.($status ? 'opened' : 'closed'));
-        return redirect()->back();
-    }
+    // public function toggleApplication($status)
+    // {
+    //     model('SessionModel')->updateActive(['application_open' => $status]);
+    //     toast('Application '.($status ? 'opened' : 'closed'));
+    //     return redirect()->back();
+    // }
+    public function toggleApplication($programmeId, $status)
+{
+    $this->sessionModel->toggle($programmeId, 'application_open', $status);
+    toast('Application '.($status ? 'opened' : 'closed').' for programme ID '.$programmeId);
+    return redirect()->back();
+}
+
+public function toggleRegistration($programmeId, $status)
+{
+    $this->sessionModel->toggle($programmeId, 'registration_open', $status);
+    toast('Registration '.($status ? 'opened' : 'closed').' for programme ID '.$programmeId);
+    return redirect()->back();
+}
+
+public function toggleResultsEntry($programmeId, $status)
+{
+    $this->sessionModel->toggle($programmeId, 'results_entry_open', $status);
+    toast('Results Entry '.($status ? 'opened' : 'closed').' for programme ID '.$programmeId);
+    return redirect()->back();
+}
+
 
     public function setSession()
     {

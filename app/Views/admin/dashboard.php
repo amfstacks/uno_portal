@@ -56,6 +56,102 @@
         </div>
     </div>
 
+
+
+
+
+<!-- Set Session per Programme -->
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+    <h3 class="font-medium mb-3 flex items-center">
+        <i class="fas fa-calendar-alt mr-2 text-primary"></i> Set Academic Session
+    </h3>
+
+    <form action="setSession" method="post" class="flex flex-col sm:flex-row gap-2">
+        <?= csrf_field() ?>
+
+        <!-- Programme Selector -->
+        <select name="programme_id" required class="px-4 py-2 border border-gray-300 rounded-lg">
+            <option value="">Select Programme</option>
+            <?php foreach ($programmes as $prog): ?>
+                <option value="<?= $prog['id'] ?>"><?= esc($prog['name']) ?></option>
+            <?php endforeach; ?>
+        </select>
+
+        <!-- Session Input -->
+        <input type="text" name="session" placeholder="2025/2026" required
+               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+
+        <!-- Semester Selector -->
+        <select name="semester" required class="px-4 py-2 border border-gray-300 rounded-lg">
+            <option value="1">First Semester</option>
+            <option value="2">Second Semester</option>
+        </select>
+
+        <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition">
+            Set Session
+        </button>
+    </form>
+</div>
+
+
+<!-- Active Sessions & Programmes -->
+<div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mt-6">
+    <h2 class="text-xl font-semibold mb-4 flex items-center">
+        <i class="fas fa-list-alt mr-2 text-primary"></i> Active Sessions & Programmes
+    </h2>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Programme</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Session</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Semester</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Registration</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Application</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Results Entry</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                <?php foreach ($programmes as $prog): 
+                    $sess = $sessionsByProgramme[$prog['id']] ?? null;
+                ?>
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium"><?= esc($prog['name']) ?></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm"><?= $sess ? esc($sess['session_name']) : '<span class="text-red-500">None</span>' ?></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm"><?= $sess ? $sess['semester'] : '-' ?></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <?php if ($sess): ?>
+                            <span class="px-2 py-1 rounded text-xs <?= $sess['registration_open'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
+                                <?= $sess['registration_open'] ? 'Open' : 'Closed' ?>
+                            </span>
+                        <?php else: ?> -
+                        <?php endif; ?>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <?php if ($sess): ?>
+                            <span class="px-2 py-1 rounded text-xs <?= $sess['application_open'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
+                                <?= $sess['application_open'] ? 'Open' : 'Closed' ?>
+                            </span>
+                        <?php else: ?> -
+                        <?php endif; ?>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <?php if ($sess): ?>
+                            <span class="px-2 py-1 rounded text-xs <?= $sess['results_entry_open'] ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800' ?>">
+                                <?= $sess['results_entry_open'] ? 'Open' : 'Closed' ?>
+                            </span>
+                        <?php else: ?> -
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
     <!-- Session Control -->
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
         <h2 class="text-xl font-semibold mb-4 flex items-center">
