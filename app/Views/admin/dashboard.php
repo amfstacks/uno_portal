@@ -78,8 +78,9 @@
         </select>
 
         <!-- Session Input -->
-        <input type="text" name="session" placeholder="2025/2026" required
-               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+        <!-- <input type="text" name="session" placeholder="2025/2026" required
+               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"> -->
+<?= sessionDropdown('session', '2025/2026') ?>
 
         <!-- Semester Selector -->
         <select name="semester" required class="px-4 py-2 border border-gray-300 rounded-lg">
@@ -111,7 +112,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Session</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Semester</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Application</th>
+                    <!-- <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Application</th> -->
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Results Entry</th>
                 </tr>
             </thead>
@@ -153,7 +154,14 @@
 
                             <!-- Semester -->
                             <td class="px-6 py-4 text-sm">
-                                <?= esc($session['semester']) ?>
+                                <!-- <?= esc($session['semester']) ?> -->
+                                <select 
+        class="border rounded px-2 py-1 text-xs bg-white"
+        onchange="updateSemester(<?= $session['id'] ?>, this.value)"
+    >
+        <option value="1" <?= $session['semester'] == 1 ? 'selected' : '' ?>>1</option>
+        <option value="2" <?= $session['semester'] == 2 ? 'selected' : '' ?>>2</option>
+    </select>
                             </td>
 
                             <!-- Session Type + Status -->
@@ -189,11 +197,7 @@
                             </td>
 
                             <!-- Application Open -->
-                            <td class="px-6 py-4 text-sm">
-                                <span class="px-2 py-1 rounded text-xs <?= $session['application_open'] ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
-                                    <?= $session['application_open'] ? 'Open' : 'Closed' ?>
-                                </span>
-                            </td>
+                           
 
                             <!-- Results Entry -->
                             <td class="px-6 py-4 text-sm">
@@ -216,62 +220,7 @@
 
 
 
-    <!-- Session Control -->
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-        <h2 class="text-xl font-semibold mb-4 flex items-center">
-            <i class="fas fa-cogs mr-2 text-primary"></i> Session & Window Controls
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Set Session -->
-            <div>
-                <h3 class="font-medium mb-3">Set Academic Session</h3>
-                <form action="setSession" method="post" class="flex flex-col sm:flex-row gap-2">
-                    <?= csrf_field() ?>
-                    <input type="text" name="session" placeholder="2025/2026" required
-                           class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                    <select name="semester" required class="px-4 py-2 border border-gray-300 rounded-lg">
-                        <option value="1">First Semester</option>
-                        <option value="2">Second Semester</option>
-                    </select>
-                    <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition">
-                        Set
-                    </button>
-                </form>
-            </div>
-
-            <!-- Window Toggles -->
-            <div>
-                <h3 class="font-medium mb-3">Portal Windows</h3>
-                <div class="grid grid-cols-3 gap-2 text-center">
-                    <div>
-                        <p class="text-xs text-gray-600">Application</p>
-                        <div class="flex justify-center space-x-1 mt-1">
-                            <a href="toggle/application/1" class="text-green-600 hover:underline text-sm">Open</a>
-                            <span>|</span>
-                            <a href="/admin/toggle/application?status=0" class="text-red-600 hover:underline text-sm">Close</a>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-600">Registration</p>
-                        <div class="flex justify-center space-x-1 mt-1">
-                            <a href="/admin/toggle/registration?status=1" class="text-green-600 hover:underline text-sm">Open</a>
-                            <span>|</span>
-                            <a href="/admin/toggle/registration?status=0" class="text-red-600 hover:underline text-sm">Close</a>
-                        </div>
-                    </div>
-                    <div>
-                        <p class="text-xs text-gray-600">Results Entry</p>
-                        <div class="flex justify-center space-x-1 mt-1">
-                            <a href="/admin/toggle/results_entry?status=1" class="text-green-600 hover:underline text-sm">Open</a>
-                            <span>|</span>
-                            <a href="/admin/toggle/results_entry?status=0" class="text-red-600 hover:underline text-sm">Close</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
     <!-- Exam Officers -->
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
@@ -374,7 +323,7 @@ function updateSessionStatus(sessionId, type, value) {
             // alert('Updated successfully!');
             //  toast('Status updated successfully!');
             showToast('Status updated successfully!');
-              toastr.success('Status updated successfully!');
+            //   toastr.success('Status updated successfully!');
             
         } else {
             alert('Error updating!');
@@ -382,6 +331,32 @@ function updateSessionStatus(sessionId, type, value) {
     })
     .catch(err => console.error(err));
 }
+
+function updateSemester(sessionId, value) {
+    fetch('<?= base_url("admin/update-session-semester") ?>', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+            session_id: sessionId,
+            semester: value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+                       showToast('Status updated successfully!');
+
+        } else {
+            toastr.error('Error updating semester!');
+        }
+    })
+    .catch(err => console.error(err));
+}
+
 </script>
+
 
 <?= $this->endSection() ?>

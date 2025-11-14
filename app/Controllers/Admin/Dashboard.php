@@ -111,6 +111,34 @@ public function updateSessionStatus()
     return $this->response->setJSON(['status' => 'success']);
 }
 
+public function updateSessionSemester()
+    {
+        // Ensure it's an AJAX request
+        if (!$this->request->isAJAX()) {
+            return $this->response->setStatusCode(400)
+                                  ->setJSON(['status' => 'error', 'message' => 'Invalid request']);
+        }
+
+        // Get JSON input
+        $data = $this->request->getJSON();
+        $sessionId = $data->session_id ?? null;
+        $semester = $data->semester ?? null;
+
+        if (!$sessionId || !$semester) {
+            return $this->response->setStatusCode(400)
+                                  ->setJSON(['status' => 'error', 'message' => 'Missing data']);
+        }
+
+        // Update the session
+        $updated = $this->sessionModel->update($sessionId, ['semester' => $semester]);
+
+        if ($updated) {
+            return $this->response->setJSON(['status' => 'success']);
+        } else {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Update failed']);
+        }
+    }
+
 
 public function toggleResultsEntry($programmeId, $status)
 {
