@@ -63,6 +63,13 @@ $routes->group('admin/academic', ['filter' => 'role:admin'], function ($routes) 
     $routes->post('courses/create', 'Admin\Academic::createCourse');
     $routes->post('courses/update/(:num)', 'Admin\Academic::updateCourse/$1');
     $routes->get('courses/delete/(:num)', 'Admin\Academic::deleteCourse/$1');
+
+    // COURSES APPLIED UNDER A DEPARTMENT
+$routes->get('applied-courses/(:num)', 'Admin\Academic::appliedCourses/$1');
+$routes->post('applied-courses/create', 'Admin\Academic::createAppliedCourse');
+$routes->post('applied-courses/update/(:num)', 'Admin\Academic::updateAppliedCourse/$1');
+$routes->get('applied-courses/delete/(:num)', 'Admin\Academic::deleteAppliedCourse/$1');
+
 });
 
 $routes->group('admin/fees', ['filter' => 'role:admin'], function ($routes) {

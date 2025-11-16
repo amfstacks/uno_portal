@@ -5,6 +5,8 @@ use App\Controllers\BaseController;
 use App\Models\FacultyModel;
 use App\Models\DepartmentModel;
 use App\Models\CourseModel;
+use App\Models\courseAppliedModel;
+
 use App\Traits\CrudTrait;
 
 class Academic extends BaseController
@@ -14,12 +16,16 @@ class Academic extends BaseController
     protected $facultyModel;
     protected $departmentModel;
     protected $courseModel;
+    protected $courseAppliedModel;
 
     public function __construct()
     {
         $this->facultyModel = new FacultyModel();
         $this->departmentModel = new DepartmentModel();
         $this->courseModel = new CourseModel();
+        $this->courseAppliedModel = new courseAppliedModel();
+
+        
     }
 
     // === FACULTIES ===
@@ -87,6 +93,54 @@ class Academic extends BaseController
 
     return view('admin/academic/departments_all', $data);
 }
+public function appliedCourses($department_id)
+{
+    $department = $this->departmentModel->find($department_id);
+
+    if (!$department) {
+        return redirect()->back()->with('error', 'Department not found');
+    }
+
+    $data = [
+        'department' => $department,
+        'courses' => $this->courseAppliedModel->getByDepartment($department_id),
+        'page' => 'applied_courses'
+    ];
+
+    return view('admin/academic/applied_courses', $data);
+}
+public function createAppliedCourse()
+{
+    $this->courseAppliedModel->save([
+        'department_id' => $this->request->getPost('department_id'),
+        'name' => $this->request->getPost('name'),
+        'code' => $this->request->getPost('code'),
+        'duration' => $this->request->getPost('duration'),
+        'level' => $this->request->getPost('level'),
+        'school_id' => session()->get('school_id'),
+    ]);
+
+    return redirect()->back()->with('success', 'Course added');
+}
+public function updateAppliedCourse($id)
+{
+    $this->courseAppliedModel->update($id, [
+        'name' => $this->request->getPost('name'),
+        'code' => $this->request->getPost('code'),
+        'duration' => $this->request->getPost('duration'),
+        'level' => $this->request->getPost('level'),
+    ]);
+
+    return redirect()->back()->with('success', 'Course updated');
+}
+public function deleteAppliedCourse($id)
+{
+    $this->courseAppliedModel->delete($id);
+    return redirect()->back()->with('success', 'Course removed');
+}
+
+
+
 
 
     public function createDepartment()

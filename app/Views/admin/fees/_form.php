@@ -51,8 +51,8 @@ $id = $id ?? null;
             </select>
         </div>
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Department</label>
-            <select name="department_id" class="w-full px-4 py-2 border rounded-lg">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Program</label>
+            <select name="program_id" class="w-full px-4 py-2 border rounded-lg">
                 <option value="">Select</option>
                 <?php foreach ($programs as $pro): ?>
                     <option value="<?= $pro['id'] ?>" <?= $department_id == $pro['id'] ? 'selected' : '' ?>>
@@ -66,8 +66,9 @@ $id = $id ?? null;
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Session</label>
-            <input type="text" name="session" value="<?= esc($session) ?>" placeholder="2025/2026" required 
-                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary">
+            <!-- <input type="text" name="session" value="<?= esc($session) ?>" placeholder="2025/2026" required 
+                   class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"> -->
+                   <?= sessionDropdown('session', '2025/2026') ?>
         </div>
 
         <!-- Level – hidden for application fees -->

@@ -10,7 +10,7 @@ class FeeStructureModel extends Model
     protected $useTimestamps = true;
     protected $allowedFields = [
         'school_id', 'department_id', 'program', 'session',
-        'level', 'semester', 'amount', 'fee_type', 'is_mandatory','fee_category'
+        'level', 'semester', 'amount', 'fee_type', 'is_mandatory','fee_category','program_id'
     ];
 
     public function getByFilters($filters = [])

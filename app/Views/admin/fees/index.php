@@ -125,15 +125,19 @@
                         </td>
                     </tr>
                     <?php 
-                    if ($isNewGroup && $i < count($fees) - 1):
-                        $total = $this->feeModel->getTotalByProgram($fee['program'], $fee['session'], $fee['level'], $fee['semester']);
+                    // if ($isNewGroup && $i < count($fees) - 1):
+                        // $total = $this->feeModel->getTotalByProgram($fee['program'], $fee['session'], $fee['level'], $fee['semester']);
                     ?>
-                    <tr class="bg-gray-50 font-semibold">
+                    <!-- <tr class="bg-gray-50 font-semibold">
                         <td colspan="5" class="px-6 py-2 text-right">Total:</td>
-                        <td class="px-6 py-2">₦<?= number_format($total, 2) ?></td>
+                        <td class="px-6 py-2">₦<?
+                        // number_format($total, 2) 
+                        ?></td>
                         <td colspan="2"></td>
-                    </tr>
-                    <?php endif; endforeach; ?>
+                    </tr> -->
+                    <?php 
+                    // endif;
+                 endforeach; ?>
                 </tbody>
             </table>
         </div>
