@@ -26,6 +26,16 @@
                 <?php endforeach; ?>
             </select>
         </div>
+         <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Departmental Course</label>
+            <select name="course_department_id" class="w-full px-4 py-2 border rounded-lg">
+                 <?php foreach ($courses_applied as $courses_from_department): ?>
+                    <option value="<?= $courses_from_department['id'] ?>" >
+                        <?= esc($courses_from_department['name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Units</label>

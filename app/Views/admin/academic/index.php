@@ -25,8 +25,17 @@
             <p class="text-sm text-gray-600 mt-1">
                 <? var_dump($page)?>
                 <?= $page === 'faculties' ? 'Manage faculties in your institution' : 
-                    ($page === 'departments' ? "Departments under <strong>" . esc($faculty['name']) . "</strong>" : 
+                    ($page === 'departments' ? "Departments under  <strong>" . esc($faculty['name']) . "</strong>" : 
                     "Courses in <strong>" . esc($department['name']) . "</strong>") ?>
+                <?= 
+    ($page === 'departments'
+        ? '<br><a href="/admin/academic/departments/' . $faculty['id'] . '" class="hover:text-primary">'
+            . esc($faculty['name']) .
+          '</a>'
+        : ''
+    );
+?>
+
             </p>
         </div>
         <button onclick="openModal('createModal')" 
@@ -46,6 +55,9 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code</th>
                         <?php if ($page !== 'courses'): ?>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Count</th>
+                            <?php if ($page === 'departments'): ?>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Courses Offered</th>
+                             <?php endif; ?>
                         <?php else: ?>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Level</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Units</th>
@@ -72,15 +84,26 @@
                                 </a>
                             <?php else: ?>
                                 <?= esc($item['title']) ?>
+                                <br>
+                                <?= esc($item['applied_course_name'] ?? '—') ?>
                             <?php endif; ?>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500"><?= esc($item['code'] ?? '—') ?></td>
                         <?php if ($page !== 'courses'): ?>
                             <td class="px-6 py-4 text-sm">
                                 <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                                    <?= $page === 'faculties' ? ($item['dept_count'] ?? 0) . ' depts' : ($item['course_count'] ?? 0) . ' courses' ?>
+                                    <?= $page === 'faculties' ? ($item['dept_count'] ?? 0) . ' depts' : ($item['course_count'] ?? 0) . ' courses ' ?>
                                 </span>
                             </td>
+                             <?php if ($page === 'departments'): ?>
+                             <td class="px-6 py-4 text-sm">
+                                 <a href="/admin/academic/applied-courses/<?= $item['id'] ?>" class="hover:text-primary">
+                                <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                                    <?= $page === 'departments' ?($item['applied_course_count'] ?? 0) . ' courses offered' : '' ?>
+                                </span>
+                                 </a>
+                            </td>
+                             <?php endif; ?>
                         <?php else: ?>
                             <td class="px-6 py-4 text-sm"><?= $item['level'] ?> Level</td>
                             <td class="px-6 py-4 text-sm"><?= $item['units'] ?></td>

@@ -182,7 +182,9 @@ public function deleteAppliedCourse($id)
         $data = [
             'department' => $department,
             'faculty' => $faculty,
-            'courses' => $this->courseModel->where('department_id', $departmentId)->findAll(),
+            // 'courses' => $this->courseModel->where('department_id', $departmentId)->findAll(),
+            'courses' => $this->courseModel->getWithAppliedName($departmentId),
+            'courses_applied' => $this->courseAppliedModel->getByDepartment($departmentId),
             'page' => 'courses'
         ];
         return view('admin/academic/index', $data);
@@ -190,7 +192,7 @@ public function deleteAppliedCourse($id)
 
     public function createCourse()
     {
-        $data = $this->request->getPost(['department_id', 'code', 'title', 'level', 'units', 'session', 'semester']);
+        $data = $this->request->getPost(['department_id', 'code', 'title', 'level', 'units', 'session', 'semester','course_department_id']);
         // $this->courseModel->create($data);
         $this->courseModel->insert($data);
         
@@ -208,7 +210,7 @@ public function deleteAppliedCourse($id)
 
     public function deleteCourse($id)
     {
-        $this->courseModel->deleteItem($id);
+        $this->courseModel->delete($id);
         toast('Course deleted.');
         return redirect()->back();
     }

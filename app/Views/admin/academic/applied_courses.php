@@ -2,13 +2,13 @@
 <?= $this->section('content') ?>
 
 <h1 class="text-2xl font-bold mb-4">
-    Courses for <?= esc($department['name']) ?>
+    Courses Of Study for <?= esc($department['name']) ?>
 </h1>
 
 <div class="mb-4">
     <button onclick="openAddModal()" 
         class="bg-blue-600 text-white px-4 py-2 rounded">
-        + Add New Course
+        + Add New Departmental Course Of Study
     </button>
 </div>
 
@@ -17,7 +17,7 @@
     <table class="min-w-full">
         <thead class="bg-gray-100">
             <tr>
-                <th class="px-4 py-2 text-left text-sm font-medium">Course</th>
+                <th class="px-4 py-2 text-left text-sm font-medium">Course Of Study</th>
                 <th class="px-4 py-2 text-left text-sm font-medium">Code</th>
                 <th class="px-4 py-2 text-left text-sm font-medium">Duration</th>
                 <th class="px-4 py-2 text-sm">Actions</th>
@@ -56,7 +56,7 @@
 <!-- ADD COURSE MODAL -->
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white w-96 p-6 rounded shadow">
-        <h2 class="text-xl font-bold mb-3">Add New Course</h2>
+        <h2 class="text-xl font-bold mb-3">Add New Departmental Course</h2>
 
         <form action="create" method="POST">
 
