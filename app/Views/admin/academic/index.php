@@ -104,8 +104,6 @@
     </div>
 </div>
 
-
-
 <!-- Create Modal -->
 <dialog id="createModal" class="p-6 bg-white rounded-xl shadow-xl max-w-md w-full">
     <form action="/admin/academic/<?= $page ?>/create" method="post">
@@ -120,24 +118,16 @@
 </dialog>
 
 <!-- Edit Modal -->
-<dialog id="editModala" class="p-6 bg-white rounded-xl shadow-xl max-w-md w-full">
-    <form id="editForma" method="post">
-        <?= csrf_field() ?>
-
-    </form>
-</dialog>
 <dialog id="editModal" class="p-6 bg-white rounded-xl shadow-xl max-w-md w-full">
     <form id="editForm" method="post">
         <?= csrf_field() ?>
+        <!-- Filled by JS -->
     </form>
 </dialog>
-<template id="editTemplate">
-    <?= $this->include('admin/academic/_form') ?>
-</template>
 
 <script>
 function openModal(id) { document.getElementById(id).showModal(); }
-function editItem__(item) {
+function editItem(item) {
     alert('aa');
     const form = document.getElementById('editForm');
     form.innerHTML = '<?= csrf_field() ?>' + 
@@ -147,27 +137,5 @@ function editItem__(item) {
     document.getElementById('editModal').showModal();
 }
 </script>
-<script>
-function editItem(item) {
-    const form = document.getElementById('editForm');
-
-    // Load template
-    const template = document.getElementById('editTemplate').innerHTML;
-
-    // Fill simple {{field}} values
-    let filledForm = template.replace(/{{(.*?)}}/g, (match, key) => item[key] ?? '');
-
-    // Put into form
-    form.innerHTML = `<?= csrf_field() ?> 
-                      <input type="hidden" name="id" value="${item.id}">
-                      ${filledForm}`;
-
-    // Update action
-    form.action = `/admin/academic/<?= $page ?>/update/${item.id}`;
-
-    document.getElementById('editModal').showModal();
-}
-</script>
-
 
 <?= $this->endSection() ?>
