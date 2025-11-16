@@ -40,6 +40,29 @@ $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->post('setSession', 'Admin\Dashboard::setSession');
     $routes->get('results/activate', 'Admin\Dashboard::activateResults');
     $routes->get('registration/list', 'Admin\Dashboard::registrationList');
+    $routes->get('users', 'Admin\UserManagement::index');
+    $routes->post('users/create', 'Admin\UserManagement::create');
+    $routes->get('users/toggle/(:num)', 'Admin\UserManagement::toggleStatus/$1');
+    $routes->get('users/reset-password/(:num)', 'Admin\UserManagement::resetPassword/$1');
+});
+
+$routes->group('admin/academic', ['filter' => 'role:admin'], function ($routes) {
+    $routes->get('faculties', 'Admin\Academic::faculties');
+    // $routes->get('departments', 'Admin\Academic::departments');
+    $routes->post('faculties/create', 'Admin\Academic::createFaculty');
+    $routes->post('faculties/update/(:num)', 'Admin\Academic::updateFaculty/$1');
+    $routes->get('faculties/delete/(:num)', 'Admin\Academic::deleteFaculty/$1');
+
+    $routes->get('departments/(:num)', 'Admin\Academic::departments/$1');
+    $routes->get('departments', 'Admin\Academic::allDepartments');
+    $routes->post('departments/create', 'Admin\Academic::createDepartment');
+    $routes->post('departments/update/(:num)', 'Admin\Academic::updateDepartment/$1');
+    $routes->get('departments/delete/(:num)', 'Admin\Academic::deleteDepartment/$1');
+
+    $routes->get('courses/(:num)', 'Admin\Academic::courses/$1');
+    $routes->post('courses/create', 'Admin\Academic::createCourse');
+    $routes->post('courses/update/(:num)', 'Admin\Academic::updateCourse/$1');
+    $routes->get('courses/delete/(:num)', 'Admin\Academic::deleteCourse/$1');
 });
 
 // Student Routes (Protected)
