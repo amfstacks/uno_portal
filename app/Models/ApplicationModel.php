@@ -11,8 +11,8 @@ class ApplicationModel extends Model
     protected $createdField     = 'applied_at';
     protected $updatedField     = 'updated_at';
 
-    protected $allowedFields = [
-        'full_name', 'email', 'phone',
-        'course_applied', 'status', 'admission_letter_path'
+   protected $allowedFields = [
+        'user_id', 'first_name', 'middle_name', 'last_name',
+        'email', 'phone', 'program', 'course_id', 'status'
     ];
 }

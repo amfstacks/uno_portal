@@ -28,6 +28,11 @@ $routes->get('/login', 'Auth::login');
 $routes->post('login', 'Auth::login');
 $routes->get('/logout', 'Auth::logout');
 
+// Public Routes
+$routes->get('/', 'Applicant\Home::index');
+$routes->get('apply', 'Applicant\Application::index');
+$routes->post('apply/submit', 'Applicant\Application::submit');
+
 // Admin Routes (Protected)
 $routes->group('admin', ['filter' => 'role:admin'], function ($routes) {
     $routes->get('dashboard', 'Admin\Dashboard::index');
