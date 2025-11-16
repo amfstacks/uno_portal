@@ -65,6 +65,13 @@ $routes->group('admin/academic', ['filter' => 'role:admin'], function ($routes) 
     $routes->get('courses/delete/(:num)', 'Admin\Academic::deleteCourse/$1');
 });
 
+$routes->group('admin/fees', ['filter' => 'role:admin'], function ($routes) {
+    $routes->get('/', 'Admin\FeeStructure::index');
+    $routes->post('create', 'Admin\FeeStructure::create');
+    $routes->post('update/(:num)', 'Admin\FeeStructure::update/$1');
+    $routes->get('delete/(:num)', 'Admin\FeeStructure::delete/$1');
+    $routes->get('export', 'Admin\FeeStructure::export');
+});
 // Student Routes (Protected)
 $routes->group('student', ['filter' => 'role:student'], function ($routes) {
     $routes->get('dashboard', 'Student\Dashboard::index');

@@ -83,6 +83,10 @@
     <i class="fas fa-layer-group"></i>
     <span>Departments</span>
 </a>
+<a href="/admin/fees" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/20 transition <?= uri_string() === 'admin/fees' ? 'bg-primary/30' : '' ?>">
+    <i class="fas fa-money-bill-wave"></i>
+    <span>Fee Structure</span>
+</a>
             <a href="/admin/registration-list" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/20 transition">
                 <i class="fas fa-users"></i>
                 <span>Registration List</span>
