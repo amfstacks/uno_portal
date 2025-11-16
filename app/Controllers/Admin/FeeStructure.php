@@ -4,16 +4,20 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Models\FeeStructureModel;
 use App\Models\DepartmentModel;
+use App\Models\ProgrammeModel;
 
 class FeeStructure extends BaseController
 {
     protected $feeModel;
     protected $deptModel;
+    protected $ProgrammeModel;
+    
 
     public function __construct()
     {
         $this->feeModel = new FeeStructureModel();
         $this->deptModel = new DepartmentModel();
+        $this->ProgrammeModel = new ProgrammeModel();
     }
 
     public function index()
@@ -24,10 +28,11 @@ class FeeStructure extends BaseController
             'level' => $this->request->getGet('level'),
             'semester' => $this->request->getGet('semester')
         ];
-
+$schoolId = 1;
         $data = [
             'fees' => $this->feeModel->getByFilters($filters),
             'departments' => $this->deptModel->where('faculty_id IS NOT NULL')->findAll(),
+            'programs' => $this->ProgrammeModel->getActiveProgrammes($schoolId),
             'filters' => $filters,
             'sessions' => $this->getSessions(),
             'levels' => ['100','200','300','400'],
@@ -41,6 +46,9 @@ class FeeStructure extends BaseController
     {
         $data = $this->request->getPost();
         $data['school_id'] = session()->get('school_id');
+        if ($data['fee_category'] ?? 'registration' === 'application') {
+    $data['level'] = null;
+}
         $this->feeModel->insert($data);
         toast('Fee added successfully.');
         return redirect()->back();
@@ -49,6 +57,9 @@ class FeeStructure extends BaseController
     public function update($id)
     {
         $data = $this->request->getPost(['amount', 'is_mandatory']);
+        if ($data['fee_category'] === 'application') {
+        $data['level'] = null;
+    }
         $this->feeModel->update($id, $data);
         toast('Fee updated.');
         return redirect()->back();

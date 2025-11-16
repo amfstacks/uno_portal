@@ -103,6 +103,9 @@
                             <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
                                 <?= ucfirst($fee['fee_type']) ?>
                             </span>
+                            <span class="text-xs text-gray-500 mt-1">
+            <?= $fee['fee_category'] === 'application' ? 'Application' : 'Registration' ?>
+        </span>
                         </td>
                         <td class="px-6 py-3 text-sm font-medium">
                             ₦<?= number_format($fee['amount'], 2) ?>
@@ -154,16 +157,34 @@
 </dialog>
 
 <script>
-function openModal(id) { document.getElementById(id).showModal(); }
-function editFee(fee) {
-    const form = document.getElementById('editForm');
-    form.innerHTML = '<?= csrf_field() ?>' +
-        `<input type="hidden" name="id" value="${fee.id}">` +
-        `<?= $this->include('admin/fees/_form') ?>`
-            .replace(/{{(.*?)}}/g, (m, k) => fee[k] || '');
-    form.action = `/admin/fees/update/${fee.id}`;
-    document.getElementById('editModal').showModal();
+function openModal(id) { 
+    document.getElementById(id).showModal(); 
 }
+
+function editFee(fee) {
+    const modal = document.getElementById('editModal');
+    const form = document.getElementById('editForm');
+
+    // Clone real PHP-rendered form
+    const template = document.getElementById('editTemplate').innerHTML;
+
+    form.innerHTML = template;
+    form.action = `/admin/fees/update/${fee.id}`;
+
+    // Fill inputs
+    form.querySelector('[name="program"]').value = fee.program;
+    form.querySelector('[name="department_id"]').value = fee.department_id;
+    form.querySelector('[name="session"]').value = fee.session;
+    form.querySelector('[name="level"]').value = fee.level;
+    form.querySelector('[name="semester"]').value = fee.semester;
+    form.querySelector('[name="fee_type"]').value = fee.fee_type;
+    form.querySelector('[name="amount"]').value = fee.amount;
+    form.querySelector('[name="fee_category"]').value = fee.fee_category;
+    form.querySelector('[name="is_mandatory"]').checked = fee.is_mandatory == 1;
+
+    modal.showModal();
+}
+
 </script>
 
 <?= $this->endSection() ?>

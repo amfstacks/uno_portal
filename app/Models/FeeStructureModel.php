@@ -10,7 +10,7 @@ class FeeStructureModel extends Model
     protected $useTimestamps = true;
     protected $allowedFields = [
         'school_id', 'department_id', 'program', 'session',
-        'level', 'semester', 'amount', 'fee_type', 'is_mandatory'
+        'level', 'semester', 'amount', 'fee_type', 'is_mandatory','fee_category'
     ];
 
     public function getByFilters($filters = [])
@@ -51,8 +51,14 @@ class FeeStructureModel extends Model
                     ->first()['amount'] ?? 0;
     }
 
+    // public function getFeeTypes()
+    // {
+    //     return ['tuition','acceptance','lab','library','medical','development','ict','sports','caution'];
+    // }
     public function getFeeTypes()
-    {
-        return ['tuition','acceptance','lab','library','medical','development','ict','sports','caution'];
-    }
+{
+    $feeTypeModel = new \App\Models\FeeTypeModel();
+
+    return $feeTypeModel->getBySchool();
+}
 }
