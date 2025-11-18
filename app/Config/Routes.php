@@ -85,13 +85,24 @@ $routes->group('admin/fees', ['filter' => 'role:admin'], function ($routes) {
     $routes->get('export', 'Admin\FeeStructure::export');
 });
 // Student Routes (Protected)
-$routes->group('student', ['filter' => 'role:student'], function ($routes) {
+// $routes->group('student', ['filter' => 'role:student'], function ($routes) {
+//     $routes->get('dashboard', 'Student\Dashboard::index');
+//     $routes->get('courses', 'Student\Dashboard::courses');
+//     $routes->get('results', 'Student\Dashboard::results');
+//     $routes->get('transcript', 'Student\Dashboard::transcript');
+//     $routes->get('documents', 'Student\Dashboard::documents');
+//     $routes->get('support', 'Student\Dashboard::support');
+// });
+$routes->group('student', ['filter' => 'role:student'], function($routes) {
     $routes->get('dashboard', 'Student\Dashboard::index');
-    $routes->get('courses', 'Student\Dashboard::courses');
-    $routes->get('results', 'Student\Dashboard::results');
-    $routes->get('transcript', 'Student\Dashboard::transcript');
-    $routes->get('documents', 'Student\Dashboard::documents');
-    $routes->get('support', 'Student\Dashboard::support');
+    $routes->get('courses/register', 'Student\CourseRegistration::index');
+    $routes->post('courses/register/save', 'Student\CourseRegistration::save');
+    $routes->get('results', 'Student\Results::index');
+    $routes->get('fees', 'Student\Fees::index');
+    $routes->get('payments', 'Student\Payments::index');
+    $routes->get('transcript', 'Student\Transcript::generate');
+    $routes->get('support', 'Student\Support::index');
+    $routes->post('support/create', 'Student\Support::create');
 });
 
 // Bursary Routes (Protected)
