@@ -89,4 +89,24 @@ class StudentModel extends Model
     {
         return $this->where('is_probation', 1)->findAll();
     }
+     public function getFullProfile($userId)
+    {
+        return $this->select("
+                students.*,
+
+                course_applied.name AS course_name,
+                course_applied.code AS course_code,
+
+                departments.name AS department_name,
+                departments.code AS department_code,
+
+                faculties.name AS faculty_name,
+                faculties.code AS faculty_code
+            ")
+            ->join('course_applied', 'course_applied.id = students.course_of_study', 'left')
+            ->join('departments', 'departments.id = students.department', 'left')
+            ->join('faculties', 'faculties.id = students.faculty', 'left')
+            ->where('students.user_id', $userId)
+            ->first();
+    }
 }

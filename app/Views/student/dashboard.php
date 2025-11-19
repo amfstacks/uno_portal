@@ -2,75 +2,127 @@
 <?= $this->section('content') ?>
 
 <div class="space-y-6">
+
+    <!-- === TOP CARDS (4 GRID) === -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- First Name -->
         <div class="bg-white p-6 rounded-xl shadow-sm border" data-aos="fade-up">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Current Level</p>
-                    <p class="text-3xl font-bold primary-text"><?= $student['level'] ?></p>
-                </div>
-                <i class="fas fa-graduation-cap text-4xl opacity-20 primary-text"></i>
-            </div>
+            <p class="text-sm text-gray-600">First Name</p>
+            <p class="text-2xl font-bold primary-text"><?= esc($student['first_name']) ?></p>
         </div>
+
+        <!-- Last Name -->
         <div class="bg-white p-6 rounded-xl shadow-sm border" data-aos="fade-up" data-aos-delay="100">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">CGPA</p>
-                    <p class="text-3xl font-bold text-green-600"><?= number_format($cgpa, 2) ?></p>
-                </div>
-                <i class="fas fa-trophy text-4xl opacity-20 text-green-600"></i>
-            </div>
+            <p class="text-sm text-gray-600">Last Name</p>
+            <p class="text-2xl font-bold primary-text"><?= esc($student['last_name']) ?></p>
         </div>
+
+        <!-- Matric Number -->
         <div class="bg-white p-6 rounded-xl shadow-sm border" data-aos="fade-up" data-aos-delay="200">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Total Fees</p>
-                    <p class="text-3xl font-bold">₦<?= number_format($total_fees) ?></p>
-                </div>
-                <i class="fas fa-money-bill-wave text-4xl opacity-20 text-orange-600"></i>
-            </div>
+            <p class="text-sm text-gray-600">Matric No</p>
+            <p class="text-2xl font-bold primary-text"><?= esc($student['matric_no']) ?></p>
         </div>
+
+        <!-- Current Level -->
         <div class="bg-white p-6 rounded-xl shadow-sm border" data-aos="fade-up" data-aos-delay="300">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm text-gray-600">Paid</p>
-                    <p class="text-3xl font-bold text-green-600">₦<?= number_format($paid_fees) ?></p>
-                </div>
-                <i class="fas fa-check-circle text-4xl opacity-20 text-green-600"></i>
-            </div>
+            <p class="text-sm text-gray-600">Level</p>
+            <p class="text-2xl font-bold primary-text"><?= esc($student['level']) ?></p>
         </div>
+
     </div>
 
+
+    <!-- === SECOND GRID (PROFILE + DETAILS) === -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- PROFILE CARD -->
         <div class="bg-white p-6 rounded-xl shadow-sm border" data-aos="fade-up">
-            <h3 class="text-xl font-semibold mb-4">Quick Actions</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <a href="/student/courses/register" class="bg-blue-50 hover:bg-blue-100 p-6 rounded-lg text-center transition">
-                    <i class="fas fa-book text-3xl text-blue-600 mb-2"></i>
-                    <p class="font-medium">Register Courses</p>
-                </a>
-                <a href="/student/fees" class="bg-green-50 hover:bg-green-100 p-6 rounded-lg text-center transition">
-                    <i class="fas fa-credit-card text-3xl text-green-600 mb-2"></i>
-                    <p class="font-medium">Pay Fees</p>
-                </a>
+            <h3 class="text-xl font-semibold mb-4">Profile Details</h3>
+
+            <div class="flex items-center space-x-4 mb-6">
+                <img src="<?= $student['profile_pic'] ? base_url('uploads/' . $student['profile_pic']) : 'https://via.placeholder.com/100' ?>"
+                     class="w-24 h-24 rounded-full object-cover border">
+                <div>
+                    <p class="text-lg font-bold"><?= esc($student['full_name']) ?></p>
+                    <p class="text-gray-500 text-sm"><?= esc($student['email']) ?></p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <p class="text-gray-500">Middle Name</p>
+                    <p class="font-medium"><?= esc($student['middle_name']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Department</p>
+                    <p class="font-medium"><?= esc($student['department_name']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Faculty</p>
+                    <p class="font-medium"><?= esc($student['faculty_name']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Course of Study</p>
+                    <p class="font-medium"><?= esc($student['course_name']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">State of Origin</p>
+                    <p class="font-medium"><?= esc($student['state_of_origin']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Religion</p>
+                    <p class="font-medium"><?= esc($student['religion']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Blood Group</p>
+                    <p class="font-medium"><?= esc($student['blood_group']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Date of Birth</p>
+                    <p class="font-medium"><?= esc($student['dob']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Admission Session</p>
+                    <p class="font-medium"><?= esc($student['session_admit']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Current Session</p>
+                    <p class="font-medium"><?= esc($student['session']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Current Semester</p>
+                    <p class="font-medium"><?= esc($student['semester']) ?></p>
+                </div>
+                <div>
+                    <p class="text-gray-500">Status</p>
+                    <p class="font-medium"><?= esc($student['status']) ?></p>
+                </div>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-sm border" data-aos="fade-up">
-            <h3 class="text-xl font-semibold mb-4">Recent Results</h3>
-            <?php if ($recent_results): ?>
-                <ul class="space-y-3">
-                    <?php foreach ($recent_results as $r): ?>
-                    <li class="flex justify-between">
-                        <span><?= esc($r['course_code']) ?> - <?= esc($r['title']) ?></span>
-                        <span class="font-bold text-green-600"><?= $r['grade'] ?></span>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php else: ?>
-                <p class="text-gray-500">No results yet.</p>
-            <?php endif; ?>
+
+        <!-- BIO / SIGNATURE CARD -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border" data-aos="fade-up" data-aos-delay="100">
+            <h3 class="text-xl font-semibold mb-4">Bio</h3>
+
+            <p class="text-gray-700 whitespace-pre-line">
+                <?= $student['bio'] ? esc($student['bio']) : 'No bio provided yet.' ?>
+            </p>
+
+            <div class="mt-6">
+                <h4 class="font-semibold mb-2">Signature</h4>
+                <?php if ($student['signature']): ?>
+                    <img src="<?= base_url('uploads/' . $student['signature']) ?>"
+                         class="w-40 border rounded">
+                <?php else: ?>
+                    <p class="text-gray-500">No signature uploaded.</p>
+                <?php endif; ?>
+            </div>
+
         </div>
+
     </div>
 </div>
+
 <?= $this->endSection() ?>

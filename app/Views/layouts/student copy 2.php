@@ -1,30 +1,24 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full" x-data="{ sidebarOpen: false }" xmlns:x="http://www.w3.org/1999/xhtml">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Portal | <?= esc($school['name']) ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
     <style>
-        body { font-family: 'Montserrat', sans-serif; }
+        body { font-family: 'Inter', sans-serif; }
         .primary { background-color: <?= $school['primary_color'] ?? '#1e40af' ?>; }
         .primary-text { color: <?= $school['primary_color'] ?? '#1e40af' ?>; }
-        .sidebar-transition { transition: transform 0.3s ease-in-out; }
     </style>
 </head>
 <body class="h-full bg-gray-50">
 
 <div class="flex h-full">
-
     <!-- Sidebar -->
-    <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" 
-           class="fixed z-50 inset-y-0 left-0 w-64 bg-gray-900 text-white flex flex-col sidebar-transition lg:translate-x-0 lg:static lg:inset-0">
-        <div class="p-6 border-b border-gray-800 flex items-center justify-between">
+    <aside class="w-64 bg-gray-900 text-white flex flex-col">
+        <div class="p-6 border-b border-gray-800">
             <div class="flex items-center space-x-3">
                 <img src="<?= esc($school['logo']) ?>" class="h-10 w-10 rounded">
                 <div>
@@ -32,10 +26,6 @@
                     <div class="text-xs opacity-75">Student Portal</div>
                 </div>
             </div>
-            <!-- Close button for mobile -->
-            <button @click="sidebarOpen = false" class="lg:hidden text-xl">
-                <i class="fas fa-times"></i>
-            </button>
         </div>
         <nav class="flex-1 p-4 space-y-2">
             <a href="/student/dashboard" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 <?= uri_string() === 'student/dashboard' ? 'bg-gray-800' : '' ?>">
@@ -66,17 +56,9 @@
     </aside>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col lg:aml-64">
-
-        <!-- Header -->
+    <div class="flex-1 flex flex-col">
         <header class="bg-white shadow-sm border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-            <!-- Hamburger for mobile -->
-            <button @click="sidebarOpen = true" class="lg:hidden text-xl">
-                <i class="fas fa-bars"></i>
-            </button>
-
             <h1 class="text-2xl font-bold text-gray-800"><?= $title ?? 'Student Portal' ?></h1>
-
             <div class="flex items-center space-x-4">
                 <div class="text-right">
                     <div class="font-medium"><?= esc($student['full_name']) ?></div>
@@ -85,19 +67,15 @@
                 <img src="https://ui-avatars.com/api/?name=<?= urlencode($student['full_name']) ?>&background=1e40af&color=fff" class="w-10 h-10 rounded-full">
             </div>
         </header>
-
-        <!-- Main Content -->
         <main class="flex-1 p-6 overflow-y-auto">
             <?= $this->renderSection('content') ?>
         </main>
-
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
     AOS.init({ duration: 600, once: true });
-
     function toast(msg, type = 'success') {
         const colors = { success: 'bg-green-600', error: 'bg-red-600', info: 'bg-blue-600' };
         const div = document.createElement('div');
