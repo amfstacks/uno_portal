@@ -44,8 +44,8 @@ class CourseRegistration extends BaseController
 
         // Fetch all courses matching the student's academic details
         $courses = $courseModel
-            ->select('courses.*, ca.name AS applied_course_name')
-            ->join('course_applied AS ca', 'ca.id = courses.course_department_id', 'left')
+            ->select('courses.*')
+            // ->join('course_applied AS ca', 'ca.id = courses.course_department_id', 'left')
             ->where('courses.department_id', $student['department'])
             ->where('courses.course_department_id', $student['course_of_study'])
             ->where('courses.level', $student['level'])
@@ -53,13 +53,17 @@ class CourseRegistration extends BaseController
             ->where('courses.session', $student['session'])
             ->orderBy('courses.title', 'ASC')
             ->findAll();
-
+// var_dump($student);
+// var_dump($courses);
+// exit;
         // (Not registering yet — just fetching)
         $data = [
             'title'    => 'Course Registration',
             'student'  => $student,
             'courses'  => $courses,   // final list
             'session'  => $student['session'],
+            'registered' => [],
+
         ];
 
         return view('student/courses/register', $data);
