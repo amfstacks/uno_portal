@@ -7,6 +7,8 @@ use App\Models\StudentModel;
 use App\Models\SessionModel;
 use App\Models\RegistrationModel;
 use App\Models\RegisteredCourseModel;
+use App\Models\RegisteredCourseDroppedModel;
+
 
 class CourseRegistration extends BaseController
 {
@@ -258,7 +260,7 @@ public function dropCourse($id)
     ]);
 }
 
-    public function submit()
+    public function submit_working_normally()
 {
     if ($this->request->getMethod() !== 'POST') {
         return $this->response->setJSON([
@@ -345,6 +347,132 @@ public function dropCourse($id)
         'message' => 'Course registration submitted successfully.'
     ]);
 }
+public function submit()
+{
+    if ($this->request->getMethod() !== 'POST') {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Invalid request method.'
+        ]);
+    }
+
+    $studentId = session()->get('user_id');
+
+    $student = model(StudentModel::class)
+        ->where('user_id', $studentId)
+        ->first();
+
+    if (! $student) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Student data not found.'
+        ]);
+    }
+
+    $courseIds = $this->request->getPost('course_ids');
+
+    if (empty($courseIds)) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Please select at least one course.'
+        ]);
+    }
+
+    $courseModel       = new CourseModel();
+    $regModel          = new RegisteredCourseModel();
+    $droppedRegModel   = new RegisteredCourseDroppedModel(); // new model
+
+    $session  = $student['session'];
+    $semester = $student['semester'];
+    $level    = $student['level'];
+
+    $insertData = [];
+
+    foreach ($courseIds as $cid) {
+
+        $course = $courseModel->find($cid);
+        if (! $course) continue;
+
+        // 1️⃣ Check if course already exists in registered_courses
+        if ($regModel->isRegistered($student['id'], $cid, $session, $semester)) {
+            continue; // skip duplicates
+        }
+
+        // 2️⃣ Check if course exists in registered_courses_dropped
+        $droppedCourse = $droppedRegModel
+            ->where('student_id', $student['id'])
+            ->where('cid', $cid)
+            ->where('session', $session)
+            ->where('semester', $semester)
+            ->first();
+
+        if ($droppedCourse) {
+            // Restore course: insert into registered_courses
+            $regModel->insert([
+                'student_id' => $droppedCourse['student_id'],
+                'user_id'    => $droppedCourse['user_id'],
+                'matricno'   => $droppedCourse['matricno'],
+                'cid'        => $droppedCourse['cid'],
+                'ccode'      => $droppedCourse['ccode'],
+                'ctitle'     => $droppedCourse['ctitle'],
+                'dept'       => $droppedCourse['dept'],
+                'unit'       => $droppedCourse['unit'],
+                'level'      => $droppedCourse['level'],
+                'session'    => $droppedCourse['session'],
+                'semester'   => $droppedCourse['semester'],
+                'ca'         => $droppedCourse['ca'],
+                'cbt'        => $droppedCourse['cbt'],
+                'exam'       => $droppedCourse['exam'],
+                'total'      => $droppedCourse['total'],
+                'grade'      => $droppedCourse['grade'],
+                'graded'     => $droppedCourse['graded'],
+                'sitting'    => $droppedCourse['sitting'],
+                'created_at' => $droppedCourse['created_at'],
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+
+            // Delete from dropped table
+            $droppedRegModel->delete($droppedCourse['id']);
+
+            continue; // skip adding to $insertData because already restored
+        }
+
+        // 3️⃣ Otherwise, insert as new registration
+        $insertData[] = [
+            'student_id' => $student['id'],
+            'user_id'    => $studentId,
+            'matricno'   => $student['matric_no'],
+            'cid'        => $course['id'],
+            'ccode'      => $course['code'],
+            'ctitle'     => $course['title'],
+            'dept'       => $course['department_id'],
+            'unit'       => $course['units'],
+            'level'      => $level,
+            'session'    => $session,
+            'semester'   => $semester,
+            'ca'         => 0,
+            'cbt'        => 0,
+            'exam'       => 0,
+            'total'      => 0,
+            'grade'      => '',
+            'graded'     => 0,
+            'sitting'    => 1,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+    }
+
+    // Bulk insert new registrations
+    if (! empty($insertData)) {
+        $regModel->insertBatch($insertData);
+    }
+
+    return $this->response->setJSON([
+        'status'  => 'success',
+        'message' => 'Course registration submitted successfully.'
+    ]);
+}
+
 
     public function save()
     {
