@@ -233,15 +233,25 @@ public function dropCourse($id)
         ]);
     }
 
+
     // Optional: prevent dropping courses after a certain deadline
     // $registrationDeadline = ...;
     // if (time() > strtotime($registrationDeadline)) { ... }
 
     // Mark as dropped
-    $registeredCourseModel->update($id, [
-        'status' => '11'
-    ]);
+    // $registeredCourseModel->update($id, [
+    //     'status' => '11'
+    // ]);
 
+      $db = \Config\Database::connect();
+
+    // Move the course to registered_courses_dropped
+    $db->table('registered_courses_dropped')->insert(array_merge($course, [
+        'dropped_at' => date('Y-m-d H:i:s')
+    ]));
+
+    // Delete from registered_courses
+    $registeredCourseModel->delete($id);
     return $this->response->setJSON([
         'status' => 'success',
         'message' => 'Course has been successfully dropped.'

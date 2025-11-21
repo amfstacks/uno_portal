@@ -134,7 +134,7 @@
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 rounded-lg transition">
+                    class="w-full primary hover:bg-primary/90 text-white font-medium py-3 rounded-lg transition">
                     Submit Registration
                 </button>
 
