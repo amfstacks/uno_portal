@@ -28,9 +28,10 @@ class SessionModel extends Model
          ->where('programme_id', $programmeId)->first();
     }
 
-    public function getActiveByType($schoolId, $programmeId, $sessionType)
+    public function getActiveByType( $programmeId, $sessionType) //$schoolId,
 {
-    return $this->where('school_id', 1)
+    return $this
+    // ->where('school_id', 1)
                 ->where('programme_id', $programmeId)
                 ->where('session_type', $sessionType)
                 ->where('is_active', 1)

@@ -45,7 +45,7 @@ class CourseRegistration extends BaseController
 
 // Get active registration session
 $activeRegistration = $sessionModel->getActiveByType(
-    $student['school_id'],
+    // $student['school_id'],
     $student['programme'],
     'registration'
 );
@@ -53,6 +53,8 @@ $activeRegistration = $sessionModel->getActiveByType(
             return view('student/courses/no_access', [
                 'title' => 'Course Registration Closed',
                 'message' => 'Registration session has not been opened.',
+            'student'  => $student,
+
             ]);
         }
 
@@ -60,9 +62,19 @@ $activeRegistration = $sessionModel->getActiveByType(
             return view('student/courses/no_access', [
                 'title' => 'Registration Not Allowed',
                 'message' => 'Course registration is not available for your session.',
+            'student'  => $student,
+
             ]);
         }
 
+         if ($activeRegistration['registration_open'] !=1) {
+            return view('student/courses/no_access', [
+                'title' => 'Registration Not Opened',
+                'message' => 'Course registration is not activated for your session.',
+            'student'  => $student,
+
+            ]);
+        }
 
 
         $courseModel = new CourseModel();
