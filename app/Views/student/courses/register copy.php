@@ -4,7 +4,7 @@
 <div class="max-w-5xl mx-auto">
     <div class="bg-white rounded-xl shadow-sm border p-6">
         <h2 class="text-2xl font-bold mb-2">Course Registration</h2>
-
+        <p class="text-gray-600 mb-6">Session: <strong><?= esc($session) ?></strong> | Level: <strong><?= session()->get('student')['level'] ?></strong></p>
 
         <form action="/student/courses/register/save" method="post">
             <?= csrf_field() ?>
