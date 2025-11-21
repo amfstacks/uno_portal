@@ -4,6 +4,7 @@ namespace App\Controllers\Student;
 use App\Controllers\BaseController;
 use App\Models\CourseModel;
 use App\Models\StudentModel;
+use App\Models\SessionModel;
 use App\Models\RegistrationModel;
 
 class CourseRegistration extends BaseController
@@ -39,6 +40,30 @@ class CourseRegistration extends BaseController
         if (!$student) {
             return redirect()->to('/login')->with('error', 'Student record not found.');
         }
+
+        $sessionModel = new SessionModel();
+
+// Get active registration session
+$activeRegistration = $sessionModel->getActiveByType(
+    $student['school_id'],
+    $student['programme'],
+    'registration'
+);
+  if (!$activeRegistration) {
+            return view('student/courses/no_access', [
+                'title' => 'Course Registration Closed',
+                'message' => 'Registration session has not been opened.',
+            ]);
+        }
+
+ if ($activeRegistration['session_name'] != $student['session']) {
+            return view('student/courses/no_access', [
+                'title' => 'Registration Not Allowed',
+                'message' => 'Course registration is not available for your session.',
+            ]);
+        }
+
+
 
         $courseModel = new CourseModel();
 

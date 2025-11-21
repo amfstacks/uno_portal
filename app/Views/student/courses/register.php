@@ -1,33 +1,96 @@
 <?= $this->extend('layouts/student') ?>
 <?= $this->section('content') ?>
 
-<div class="max-w-5xl mx-auto">
-    <div class="bg-white rounded-xl shadow-sm border p-6">
-        <h2 class="text-2xl font-bold mb-2">Course Registration</h2>
+<div class="container mt-4">
 
+    <h3 class="mb-1">Course Registration</h3>
+    <p class="text-muted">
+        Session: <strong><?= esc($session) ?></strong> |
+        Level: <strong><?= esc($student['level']) ?></strong> |
+        Semester: <strong><?= esc($student['semester']) ?></strong>
+    </p>
 
-        <form action="/student/courses/register/save" method="post">
-            <?= csrf_field() ?>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <?php foreach ($courses as $course): ?>
-                <label class="flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition">
-                    <input type="checkbox" name="courses[]" value="<?= $course['id'] ?>"
-                           <?= in_array($course['id'], $registered) ? 'checked' : '' ?>
-                           class="mr-3 h-5 w-5 text-primary rounded">
-                    <div>
-                        <div class="font-medium"><?= esc($course['code']) ?> - <?= esc($course['title']) ?></div>
-                        <div class="text-sm text-gray-500"><?= $course['units'] ?> Units | <?= $course['level'] ?> Level</div>
-                    </div>
-                </label>
-                <?php endforeach; ?>
-            </div>
+    <div class="card shadow-sm mt-3">
+        <div class="card-body">
 
-            <div class="mt-8 flex justify-end">
-                <button type="submit" class="px-8 py-3 bg-primary text-white rounded-lg hover:shadow-lg transition">
-                    Save Registration
-                </button>
-            </div>
-        </ity>
+            <?php if (empty($courses)): ?>
+                <div class="alert alert-warning">
+                    No courses found for your department, level, and semester.
+                </div>
+            <?php else: ?>
+
+                <form id="courseRegForm">
+
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width:5%">#</th>
+                                <th>Code</th>
+                                <th>Title</th>
+                                <th style="width:8%">Units</th>
+                                <th style="width:10%">Select</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $i = 1; ?>
+                            <?php foreach ($courses as $c): ?>
+                                <tr>
+                                    <td><?= $i++ ?></td>
+                                    <td><?= esc($c['code']) ?></td>
+                                    <td>
+                                        <?= esc($c['title']) ?>
+                                        <?php if (!empty($c['applied_course_name'])): ?>
+                                            <br>
+                                            <small class="text-muted">Applied: <?= esc($c['applied_course_name']) ?></small>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?= esc($c['units']) ?></td>
+
+                                    <td>
+                                        <input 
+                                            type="checkbox"
+                                            name="course_ids[]"
+                                            value="<?= esc($c['id']) ?>"
+                                            class="form-check-input"
+                                        >
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+
+                    <button type="submit" class="btn btn-primary mt-3 w-100">
+                        Submit Registration
+                    </button>
+
+                </form>
+
+            <?php endif; ?>
+
+        </div>
     </div>
+
 </div>
+
+<script>
+document.getElementById("courseRegForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    let formData = new FormData(this);
+
+    fetch("<?= site_url('student/course-registration/submit') ?>", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        if (data.status === "success") {
+            location.reload();
+        }
+    })
+    .catch(err => alert("Error submitting registration."));
+});
+</script>
+
 <?= $this->endSection() ?>
