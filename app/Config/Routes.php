@@ -96,7 +96,7 @@ $routes->group('admin/fees', ['filter' => 'role:admin'], function ($routes) {
 $routes->group('student', ['filter' => 'role:student'], function($routes) {
     $routes->get('dashboard', 'Student\Dashboard::index');
     $routes->get('courses/register', 'Student\CourseRegistration::index');
-    $routes->post('courses/register/save', 'Student\CourseRegistration::save');
+    $routes->post('submit', 'Student\CourseRegistration::submit');
     $routes->get('results', 'Student\Results::index');
     $routes->get('fees', 'Student\Fees::index');
     $routes->get('payments', 'Student\Payments::index');

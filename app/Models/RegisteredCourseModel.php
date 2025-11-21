@@ -12,8 +12,12 @@ class RegisteredCourseModel extends Model
     protected $updatedField     = 'updated_at';
 
     protected $allowedFields = [
-        'student_id', 'course_code', 'session',
-        'semester', 'status'
+        'student_id', 'user_id', 'matricno',
+        'cid', 'ccode', 'ctitle', 'dept', 'unit',
+        'level', 'session', 'semester',
+        'ca', 'cbt', 'exam', 'total', 'grade',
+        'graded', 'sitting',
+        'date_added', 'status'
     ];
 
     public function student()
@@ -25,5 +29,14 @@ class RegisteredCourseModel extends Model
     public function drop(int $id)
     {
         $this->update($id, ['status' => 'dropped']);
+    }
+     public function isRegistered($studentId, $courseId, $session, $semester)
+    {
+        return $this->where([
+            'student_id' => $studentId,
+            'cid'        => $courseId,
+            'session'    => $session,
+            'semester'   => $semester
+        ])->first();
     }
 }

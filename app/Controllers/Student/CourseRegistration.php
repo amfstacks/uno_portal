@@ -6,6 +6,7 @@ use App\Models\CourseModel;
 use App\Models\StudentModel;
 use App\Models\SessionModel;
 use App\Models\RegistrationModel;
+use App\Models\RegisteredCourseModel;
 
 class CourseRegistration extends BaseController
 {
@@ -78,6 +79,8 @@ $activeRegistration = $sessionModel->getActiveByType(
 
 
         $courseModel = new CourseModel();
+    $RegisteredCourseModel    = new RegisteredCourseModel();
+
 
         // Fetch all courses matching the student's academic details
         $courses = $courseModel
@@ -90,8 +93,24 @@ $activeRegistration = $sessionModel->getActiveByType(
             ->where('courses.session', $student['session'])
             ->orderBy('courses.title', 'ASC')
             ->findAll();
-// var_dump($student);
-// var_dump($courses);
+
+
+             $registered = $RegisteredCourseModel
+        ->select('cid')
+        ->where('user_id', $studentId)
+        // ->where('department_id', $student['department'])
+        // ->where('course_department_id', $student['course_of_study'])
+        ->where('level', $student['level'])
+        ->where('semester', $student['semester'])
+        ->where('session', $student['session'])
+        ->findColumn('cid');
+
+    if (!$registered) {
+        $registered = [];
+    }
+    
+// var_dump($registered);
+// // var_dump($courses);
 // exit;
         // (Not registering yet — just fetching)
         $data = [
@@ -99,12 +118,101 @@ $activeRegistration = $sessionModel->getActiveByType(
             'student'  => $student,
             'courses'  => $courses,   // final list
             'session'  => $student['session'],
-            'registered' => [],
+            'registered' => $registered,
 
         ];
 
         return view('student/courses/register', $data);
     }
+
+
+    public function submit()
+{
+    if ($this->request->getMethod() !== 'POST') {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Invalid request method.'
+        ]);
+    }
+
+    $studentId = session()->get('user_id');
+
+    $student = model(StudentModel::class)
+        ->where('user_id', $studentId)
+        ->first();
+
+    if (! $student) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Student data not found.'
+        ]);
+    }
+
+    $courseIds = $this->request->getPost('course_ids');
+
+    if (empty($courseIds)) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Please select at least one course.'
+        ]);
+    }
+
+    $courseModel = new CourseModel();
+    $regModel    = new RegisteredCourseModel();
+
+    $session  = $student['session'];
+    $semester = $student['semester'];
+    $level    = $student['level'];
+
+    $insertData = [];
+
+    foreach ($courseIds as $cid) {
+
+        $course = $courseModel->find($cid);
+        if (! $course) continue;
+
+        // Prevent duplicate registration
+        if ($regModel->isRegistered($student['id'], $cid, $session, $semester)) {
+            continue;
+        }
+
+        $insertData[] = [
+            'student_id' => $student['id'],
+            'user_id'    => $studentId,
+            'matricno'   => $student['matric_no'],
+
+            'cid'        => $course['id'],
+            'ccode'      => $course['code'],
+            'ctitle'     => $course['title'],
+            'dept'       => $course['department_id'],
+            'unit'       => $course['units'],
+            'level'      => $level,
+
+            'session'    => $session,
+            'semester'   => $semester,
+
+            'ca'         => 0,
+            'cbt'        => 0,
+            'exam'       => 0,
+            'total'      => 0,
+            'grade'      => '',
+            'graded'     => 0,
+            'sitting'    => 1,
+
+
+
+        ];
+    }
+
+    if (! empty($insertData)) {
+        $regModel->insertBatch($insertData);
+    }
+
+    return $this->response->setJSON([
+        'status'  => 'success',
+        'message' => 'Course registration submitted successfully.'
+    ]);
+}
 
     public function save()
     {
