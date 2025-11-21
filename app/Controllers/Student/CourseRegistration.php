@@ -29,7 +29,7 @@ class CourseRegistration extends BaseController
         return view('student/courses/register', $data);
     }
 
-     public function index()
+     public function index___()
     {
         $studentId = session()->get('user_id');
 
@@ -125,6 +125,128 @@ $activeRegistration = $sessionModel->getActiveByType(
         return view('student/courses/register', $data);
     }
 
+public function index()
+{
+    $studentId = session()->get('user_id');
+
+    // Fetch logged-in student's academic info
+    $student = model(StudentModel::class)
+        ->where('user_id', $studentId)
+        ->first();
+
+    if (!$student) {
+        return redirect()->to('/login')->with('error', 'Student record not found.');
+    }
+
+    $sessionModel = new SessionModel();
+
+    // Get active registration session
+    $activeRegistration = $sessionModel->getActiveByType(
+        $student['programme'],
+        'registration'
+    );
+
+    if (!$activeRegistration) {
+        return view('student/courses/no_access', [
+            'title' => 'Course Registration Closed',
+            'message' => 'Registration session has not been opened.',
+            'student' => $student,
+        ]);
+    }
+
+    if ($activeRegistration['session_name'] != $student['session']) {
+        return view('student/courses/no_access', [
+            'title' => 'Registration Not Allowed',
+            'message' => 'Course registration is not available for your session.',
+            'student' => $student,
+        ]);
+    }
+
+    if ($activeRegistration['registration_open'] != 1) {
+        return view('student/courses/no_access', [
+            'title' => 'Registration Not Opened',
+            'message' => 'Course registration is not activated for your session.',
+            'student' => $student,
+        ]);
+    }
+
+    $courseModel            = new CourseModel();
+    $registeredCourseModel  = new RegisteredCourseModel();
+
+    // Fetch available courses for student
+    $courses = $courseModel
+        ->select('courses.*')
+        ->where('courses.department_id', $student['department'])
+        ->where('courses.course_department_id', $student['course_of_study'])
+        ->where('courses.level', $student['level'])
+        ->where('courses.semester', $student['semester'])
+        ->where('courses.session', $student['session'])
+        ->orderBy('courses.title', 'ASC')
+        ->findAll();
+
+    // Fetch already registered courses with full details
+    $registered_courses = $registeredCourseModel
+        ->select('registered_courses.id, courses.code AS ccode, courses.title AS ctitle, courses.units AS unit')
+        ->join('courses', 'courses.id = registered_courses.cid', 'left')
+        ->where('registered_courses.user_id', $studentId)
+        ->where('registered_courses.level', $student['level'])
+        ->where('registered_courses.semester', $student['semester'])
+        ->where('registered_courses.session', $student['session'])
+        ->orderBy('courses.title', 'ASC')
+        ->findAll();
+
+    // Total units already registered
+    $registered_total_units = array_sum(array_column($registered_courses, 'unit'));
+
+    // For view: registered course IDs only (optional)
+    $registered_ids = array_column($registered_courses, 'id');
+
+    // Pass data to view
+    $data = [
+        'title' => 'Course Registration',
+        'student' => $student,
+        'session' => $student['session'],
+        'courses' => $courses,
+        'registered_courses' => $registered_courses,
+        'registered_total_units' => $registered_total_units,
+        'registered_ids' => $registered_ids, // optional for checkboxes logic
+    ];
+
+    return view('student/courses/register', $data);
+}
+
+public function dropCourse($id)
+{
+    $studentId = session()->get('user_id');
+    $registeredCourseModel = new RegisteredCourseModel();
+
+    // Fetch the course record to confirm ownership
+    $course = $registeredCourseModel
+        ->where('id', $id)
+        ->where('user_id', $studentId)
+        ->first();
+
+    if (!$course) {
+        return $this->response->setJSON([
+            'status' => 'error',
+            'message' => 'Course not found or you do not have permission to drop it.'
+        ]);
+    }
+
+    // Optional: prevent dropping courses after a certain deadline
+    // $registrationDeadline = ...;
+    // if (time() > strtotime($registrationDeadline)) { ... }
+
+    // Mark as dropped
+    $registeredCourseModel->update($id, [
+        'status' => '11'
+    ]);
+
+    return $this->response->setJSON([
+        'status' => 'success',
+        'message' => 'Course has been successfully dropped.'
+    ]);
+}
 
     public function submit()
 {

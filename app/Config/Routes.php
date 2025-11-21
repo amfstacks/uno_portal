@@ -97,6 +97,8 @@ $routes->group('student', ['filter' => 'role:student'], function($routes) {
     $routes->get('dashboard', 'Student\Dashboard::index');
     $routes->get('courses/register', 'Student\CourseRegistration::index');
     $routes->post('submit', 'Student\CourseRegistration::submit');
+    // Drop a registered course
+    $routes->get('drop/(:num)', 'Student\CourseRegistration::dropCourse/$1');
     $routes->get('results', 'Student\Results::index');
     $routes->get('fees', 'Student\Fees::index');
     $routes->get('payments', 'Student\Payments::index');
