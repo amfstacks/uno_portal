@@ -1,6 +1,7 @@
 <?php
 namespace App\Controllers;
 use App\Models\UserModel;
+use App\Models\StudentModel;
 
 class Auth extends BaseController
 {
@@ -43,6 +44,13 @@ class Auth extends BaseController
                 ]);
                 helper('toast');
                 toast('Login successful', 'success');
+                if($user['role'] == 'student'){
+                    $student = model(StudentModel::class)
+            ->where('user_id', $user['id'])
+            ->first();
+
+session()->set('student_data', $student);
+                }
                 return redirect()->to($user['role'] . '/dashboard');
             }
             helper('toast');

@@ -132,9 +132,10 @@ public function index()
     $studentId = session()->get('user_id');
 
     // Fetch logged-in student's academic info
-    $student = model(StudentModel::class)
-        ->where('user_id', $studentId)
-        ->first();
+    // $student = model(StudentModel::class)
+    //     ->where('user_id', $studentId)
+    //     ->first();
+        $student = student();
 
     if (!$student) {
         return redirect()->to('/login')->with('error', 'Student record not found.');
@@ -358,9 +359,10 @@ public function submit()
 
     $studentId = session()->get('user_id');
 
-    $student = model(StudentModel::class)
-        ->where('user_id', $studentId)
-        ->first();
+    // $student = model(StudentModel::class)
+    //     ->where('user_id', $studentId)
+    //     ->first();
+        $student = student();
 
     if (! $student) {
         return $this->response->setJSON([

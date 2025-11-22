@@ -1,20 +1,53 @@
-public function index()
+<?php
+
+namespace App\Controllers\Student;
+
+use App\Controllers\BaseController;
+use App\Models\FeeStructureModel;
+use App\Models\StudentModel;
+
+class Fees extends BaseController
 {
-    $student = session()->get('student');
-    $fees = model('FeeStructureModel')
-        ->where('program', $student['program'])
-        ->where('level', $student['level'])
-        ->where('session', active_session())
-        ->findAll();
+    public function index()
+    {
+        $userId = session()->get('user_id');
 
-    $total = array_sum(array_column($fees, 'amount'));
-    $paid = model('PaymentModel')->where('student_id', $student['id'])->sum('amount');
+        // Fetch student profile
+        // $student = model(StudentModel::class)
+        //     ->where('user_id', $userId)
+        //     ->first();
+            $student = student();
 
-    return view('student/fees/index', [
-        'title' => 'Fee Breakdown',
-        'fees' => $fees,
-        'total' => $total,
-        'paid' => $paid,
-        'balance' => $total - $paid
-    ]);
+        if (!$student) {
+            return redirect()->to('/login')->with('error', 'Student record not found.');
+        }
+
+        // Load the fee model
+        $feeModel = new FeeStructureModel();
+
+        // Build filters based on student academic data
+        $filters = [
+            'department_id' => $student['department'] ?? null,
+            'session'       => $student['session'] ?? null,
+            'level'         => $student['level'] ?? null,
+            'semester'      => $student['semester'] ?? null,
+        ];
+
+        // Fetch all fee items
+        $fees = $feeModel->getByFilters($filters);
+
+        // Total Fees
+        $total_fees = 0;
+        foreach ($fees as $f) {
+            $total_fees += (int)$f['amount'];
+        }
+
+        // Send to view
+        return view('student/fees/index', [
+            'title'       => 'School Fees',
+            'student'     => $student,
+            'fees'        => $fees,
+            'total_fees'  => $total_fees,
+        ]);
+    }
 }
