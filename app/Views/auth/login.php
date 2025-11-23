@@ -92,7 +92,7 @@
         <!-- LOGO -->
         <div class="flex justify-center mb-6">
             <img src="<?= esc($school['logo']) ?>" alt="Logo"
-                 class="h-2a0 w-20 object-contain rouanded-full drop-shadow-xl logo-animate">
+                 class="h-2a0 w-a20 object-contain rouanded-full drop-shadow-xl logo-animate h-a10 w-14 lg:h-1a2 lg:w-20 rounded-lg shadow-md object-contain bg-white p-1">
         </div>
 
         <h2 class="text-3xl font-bold text-center mb-6 text-gray-800 leading-tight">

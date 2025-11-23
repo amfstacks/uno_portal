@@ -169,19 +169,19 @@
       warning: { icon: 'warning', title: 'Warning', color: '#F39C12' },
       success: { icon: 'success', title: 'Success!', color: '#28A745' }
     };
-
+// showToast(flash.title, '', flashType);
     const flash = icons['<?= $flashType ?>'];
 
     Swal.fire({
       icon: flash.icon,
-      title: flash.title,
+      title: flash.flash,
       text: '<?= esc($flashMessage) ?>',
       confirmButtonColor: flash.color
     });
   </script>
 <?php endif; ?>
 
-<script>
+<!-- <script>
 
     
     // Toast function
@@ -198,7 +198,14 @@
     @if (session()->has('toast'))
         toast("{{ session('toast') }}", "success");
     @endif
-</script>
+</script> -->
+<?php if (session()->getFlashdata('toast')): ?>
+    <!-- <script>
+        const flashToast = <?= json_encode(session()->getFlashdata('toast')) ?>;
+        showToast(flashToast.message, '', flashToast.type);
+    </script> -->
+<?php endif; ?>
+
 
 <?= $this->include('layouts/footer') ?>
 </body>

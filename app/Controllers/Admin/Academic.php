@@ -155,7 +155,8 @@ public function deleteAppliedCourse($id)
             'name' => $this->request->getPost('name'),
             'code' => $this->request->getPost('code')
             ]);
-        toast('Department created.');
+        toast('Department created.','success');
+        //  return redirect()->back()->with('success', 'Department__ created');
         return redirect()->back();
     }
 

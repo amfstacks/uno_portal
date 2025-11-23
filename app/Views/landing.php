@@ -113,8 +113,8 @@
                     <a href="/apply" class="inline-flex items-center justify-center bg-white text-teal-700 font-bold px-8 py-5 rounded-full text-lg shadow-xl hover:scale-105 transition">
                         <i class="fas fa-user-graduate mr-3"></i> Start Application
                     </a>
-                    <a href="#programs" class="inline-flex items-center justify-center border-2 border-white text-white font-semibold px-8 py-5 rounded-full hover:bg-white/10 transition">
-                        Explore Programs <i class="fas fa-arrow-right ml-2"></i>
+                    <a href="/login" class="inline-flex items-center justify-center border-2 border-white text-white font-semibold px-8 py-5 rounded-full hover:bg-white/10 transition">
+                        Student Login <i class="fas fa-lock ml-2"></i>
                     </a>
                 </div>
             </div>
