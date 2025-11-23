@@ -19,5 +19,30 @@
     <style><?= esc($school['custom_css']) ?></style>
 </head>
 <body class="bg-gray-50">
-    <?= $school['header_html'] ?? '<header class="bg-['.$school['primary_color'].'] text-white p-4"><h1>'.esc($school['name']).'a</h1></header>' ?>
-     <?= $this->renderSection('content') ?>
+    <!-- <?= '<header class="bg-['.$school['primary_color'].'] text-white p-4"><h1>'.esc($school['name']).'</h1></header>' ?> -->
+<?= '
+<header class="bg-['.$school['primary_color'].'] text-white p-4">
+    <div class="flex justify-between items-center">
+        <h1>'.esc($school['name']).'</h1>
+        <nav class="hidden sm:flex space-x-4 text-sm">
+            <a href="/" class="hover:underline">Home</a>
+            <a href="#" class="hover:underline">About</a>
+            <a href="#" class="hover:underline">Contact</a>
+        </nav>
+        <!-- Mobile menu button -->
+        <button class="sm:hidden" onclick="document.getElementById(`mobile-menu`).classList.toggle(`hidden`)">
+            ☰
+        </button>
+    </div>
+
+    <!-- Mobile dropdown -->
+    <nav id="mobile-menu" class="sm:hidden hidden mt-3 flex flex-col space-y-2 text-sm">
+        <a href="/" class="hover:underline">Home</a>
+        <a href="#" class="hover:underline">About</a>
+        <a href="#" class="hover:underline">Contact</a>
+    </nav>
+</header>
+' ?>
+
+
+    <?= $this->renderSection('content') ?>
