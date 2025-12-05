@@ -13,7 +13,7 @@ class Dashboard extends BaseController
         $student = model('StudentModel')->where('user_id', session()->get('user_id'))->first();
         return view('student/dashboard', compact('student'));
     }
-
+ 
     public function courses()
     {
         $courses = model('RegisteredCourseModel')->where('student_id', session()->get('user_id'))->findAll();
