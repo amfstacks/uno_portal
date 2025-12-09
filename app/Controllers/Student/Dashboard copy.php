@@ -18,6 +18,7 @@ class Dashboard extends BaseController
     {
         $courses = model('RegisteredCourseModel')->where('student_id', session()->get('user_id'))->findAll();
         return view('student/courses', compact('courses'));
+        //
     }
 
     public function results()
