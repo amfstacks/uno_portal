@@ -87,7 +87,7 @@
     </div>
 
     <!-- LOGIN CARD -->
-    <div class="relative login-wrapper glass-card p-2 md:p-10 rounded-2xl w-[98%] max-w-md">
+    <div class="relative login-wrapper glass-card p-2 md:p-10 rounded-2xl w-[98%] max-w-lg">
 
         <!-- LOGO -->
         <div class="flex justify-center mb-6">
