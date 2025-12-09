@@ -76,8 +76,8 @@
     <span>User Management</span>
 </a>
 <a href="/admin/academic/faculties" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/20 transition <?= uri_string() === 'admin/academic/faculties' ? 'bg-primary/30' : '' ?>">
-    <i class="fas fa-university"></i>
-    <span>Academic Structure</span>
+    <i class="fas fa-university"></i> 
+    <span>Academic Structure</span> 
 </a>
 <a href="/admin/academic/departments" class="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/20 transition">
     <i class="fas fa-layer-group"></i>
